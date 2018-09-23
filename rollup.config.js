@@ -4,6 +4,7 @@ import json from 'rollup-plugin-json';
 import { terser } from 'rollup-plugin-terser';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
+import buble from 'rollup-plugin-buble';
 import pkg from './package.json';
 
 export default [
@@ -21,6 +22,9 @@ export default [
       commonjs(),
       globals(),
       builtins(),
+      buble({
+        exclude: ['node_modules/**'],
+      }),
       json(),
       terser(),
     ],
