@@ -1,6 +1,7 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import buble from 'rollup-plugin-buble';
+import json from 'rollup-plugin-json';
 import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
@@ -16,6 +17,7 @@ export default [
     plugins: [
       resolve(),
       commonjs(),
+      json(),
       buble({
         exclude: ['node_modules/**']
       }),
