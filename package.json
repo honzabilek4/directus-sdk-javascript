@@ -16,6 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/directus/directus-sdk-javascript.git"
   },
+  "browserslist": "> 0.25%, not dead",
   "keywords": [
     "node",
     "directus",
@@ -32,11 +33,15 @@
   },
   "homepage": "https://github.com/directus/directus-sdk-javascript#readme",
   "dependencies": {
+    "@babel/core": "^7.1.2",
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "qs": "^6.5.2"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.1.0",
     "rollup": "^0.66.2",
+    "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-buble": "^0.19.2",
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-json": "^3.1.0",

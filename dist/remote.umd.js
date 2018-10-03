@@ -1,1 +1,652 @@
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports,require("axios"),require("qs")):"function"==typeof define&&define.amd?define(["exports","axios","qs"],e):e(t.remote={},t.axios,t.qs)}(this,function(t,e,o){"use strict";e=e&&e.hasOwnProperty("default")?e.default:e,o=o&&o.hasOwnProperty("default")?o.default:o;var r=function(t){var e=t.accessToken,o=t.url,r=t.headers,i=t.accessTokenType,n=t.version,s=t.maxFileSize;if(this.accessTokenType=i||"header",this.accessToken=e,this.headers=r||{},this.version=n||"1.1",this.maxFileSize=s,!o)throw new Error("No Directus URL provided");var a=o.replace("/api/1.1","");this.base=a.replace(/\/+$/,""),this.api=this.base+"/api/",this.url=this.api+this.version+"/"},i={_requestHeaders:{configurable:!0}};function n(t){throw new Error("Missing parameter ["+t+"]")}i._requestHeaders.get=function(){var t=Object.assign({},this.headers);return this.accessToken&&"header"===this.accessTokenType&&(t.Authorization="Bearer "+this.accessToken),t},r.prototype._onCaughtError=function(t,e,o){return o.response&&o.response.data?e(o.response.data):e(o)},r.prototype._get=function(t,r,i){var n=this;void 0===r&&(r={}),void 0===i&&(i=!1);var s=this._requestHeaders,a=i?this.api:this.url;return this.setAccessTokenParam(r),new Promise(function(i,u){e.get(a+t,{params:r,headers:s,paramsSerializer:function(t){return o.stringify(t,{arrayFormat:"brackets",encode:!1})}}).then(function(t){return i(t.data)}).catch(function(t){return n._onCaughtError(i,u,t)})})},r.prototype._post=function(t,o,r,i){var n=this;void 0===o&&(o={}),void 0===r&&(r={}),void 0===i&&(i=!1);var s=this._requestHeaders,a=i?this.api:this.url;return this.setAccessTokenParam(r),new Promise(function(i,u){e.post(a+t,o,{headers:s,params:r,maxContentLength:n.maxFileSize}).then(function(t){return i(t.data)}).catch(function(t){return n._onCaughtError(i,u,t)})})},r.prototype._put=function(t,o,r,i){var n=this;void 0===o&&(o={}),void 0===r&&(r={}),void 0===i&&(i=!1);var s=this._requestHeaders,a=i?this.api:this.url;return this.setAccessTokenParam(r),new Promise(function(i,u){e.put(a+t,o,{headers:s,params:r,maxContentLength:n.maxFileSize}).then(function(t){return i(t.data)}).catch(function(t){return n._onCaughtError(i,u,t)})})},r.prototype._delete=function(t,o,r,i){var n=this;void 0===o&&(o={}),void 0===r&&(r={}),void 0===i&&(i=!1);var s=this._requestHeaders,a=i?this.api:this.url;return this.setAccessTokenParam(r),new Promise(function(i,u){e.delete(a+t,{headers:s,data:o,params:r}).then(function(t){return i(t.data)}).catch(function(t){return n._onCaughtError(i,u,t)})})},r.prototype.authenticate=function(t,e){var o=this;return void 0===t&&(t=n("email")),void 0===e&&(e=n("password")),new Promise(function(r,i){o._post("auth/request-token",{email:t,password:e}).then(function(t){return t.success?(o.accessToken=t.data.token,r(t)):i(t)}).catch(function(t){return i(t)})})},r.prototype.deauthenticate=function(){this.accessToken=null},r.prototype.createItem=function(t,e,o){return void 0===t&&(t=n("table")),void 0===e&&(e={}),void 0===o&&(o={}),this._post("tables/"+t+"/rows",e,o)},r.prototype.getItems=function(t,e){return void 0===t&&(t=n("table")),void 0===e&&(e={}),this._get("tables/"+t+"/rows",e)},r.prototype.getItem=function(t,e,o){return void 0===t&&(t=n("table")),void 0===e&&(e=n("id")),void 0===o&&(o={}),this._get("tables/"+t+"/rows/"+e,o)},r.prototype.updateItem=function(t,e,o,r){return void 0===t&&(t=n("table")),void 0===e&&(e=n("id")),void 0===o&&(o=n("data")),void 0===r&&(r={}),this._put("tables/"+t+"/rows/"+e,o,r)},r.prototype.deleteItem=function(t,e,o){return void 0===t&&(t=n("table")),void 0===e&&(e=n("id")),void 0===o&&(o={}),this._delete("tables/"+t+"/rows/"+e,{},o)},r.prototype.createBulk=function(t,e){if(void 0===t&&(t=n("table")),void 0===e&&(e=n("data")),!1===Array.isArray(e))throw new TypeError("Parameter data should be an array of objects");return this._post("tables/"+t+"/rows/bulk",{rows:e})},r.prototype.updateBulk=function(t,e){if(void 0===t&&(t=n("table")),void 0===e&&(e=n("data")),!1===Array.isArray(e))throw new TypeError("Parameter data should be an array of objects");return this._put("tables/"+t+"/rows/bulk",{rows:e})},r.prototype.deleteBulk=function(t,e){if(void 0===t&&(t=n("table")),void 0===e&&(e=n("data")),!1===Array.isArray(e))throw new TypeError("Parameter data should be an array of objects");return this._delete("tables/"+t+"/rows/bulk",{rows:e})},r.prototype.createFile=function(t){return void 0===t&&(t={}),this._post("files",t)},r.prototype.getFiles=function(t){return void 0===t&&(t={}),this._get("files",t)},r.prototype.getFile=function(t){return void 0===t&&(t=n("id")),this._get("files/"+t)},r.prototype.updateFile=function(t,e){return void 0===t&&(t=n("id")),void 0===e&&(e=n("data")),this._put("files/"+t,e)},r.prototype.deleteFile=function(t){return void 0===t&&(t=n("id")),this._delete("files/"+t)},r.prototype.createTable=function(t){return void 0===t&&(t=n("name")),this._post("tables",{name:t})},r.prototype.getTables=function(t){return void 0===t&&(t={}),this._get("tables",t)},r.prototype.getTable=function(t,e){return void 0===t&&(t=n("table")),void 0===e&&(e={}),this._get("tables/"+t,e)},r.prototype.createColumn=function(t,e){return void 0===t&&(t=n("table")),void 0===e&&(e={}),this._post("tables/"+t+"/columns",e)},r.prototype.getColumns=function(t,e){return void 0===t&&(t=n("table")),void 0===e&&(e={}),this._get("tables/"+t+"/columns",e)},r.prototype.getColumn=function(t,e){return void 0===t&&(t=n("table")),void 0===e&&(e=n("column")),this._get("tables/"+t+"/columns/"+e)},r.prototype.updateColumn=function(t,e,o){return void 0===t&&(t=n("table")),void 0===e&&(e=n("column")),void 0===o&&(o={}),this._put("tables/"+t+"/columns/"+e,o)},r.prototype.deleteColumn=function(t,e){return void 0===t&&(t=n("table")),void 0===e&&(e=n("column")),this._delete("tables/"+t+"/columns/"+e)},r.prototype.createGroup=function(t){return void 0===t&&(t=n("name")),this._post("groups",{name:t})},r.prototype.getGroups=function(){return this._get("groups")},r.prototype.getGroup=function(t){return void 0===t&&(t=n("id")),this._get("groups/"+t)},r.prototype.createPrivileges=function(t,e){return void 0===t&&(t=n("id")),void 0===e&&(e={}),this._post("privileges/"+t,e)},r.prototype.getPrivileges=function(t){return void 0===t&&(t=n("id")),this._get("privileges/"+t)},r.prototype.getTablePrivileges=function(t,e){return void 0===t&&(t=n("id")),void 0===e&&(e=n("table")),this._get("privileges/"+t+"/"+e)},r.prototype.updatePrivileges=function(t,e){return void 0===t&&(t=n("id")),void 0===e&&(e=n("table")),this._get("privileges/"+t+"/"+e)},r.prototype.getPreferences=function(t){return void 0===t&&(t=n("table")),this._get("tables/"+t+"/preferences")},r.prototype.updatePreference=function(t,e){return void 0===t&&(t=n("table")),void 0===e&&(e={}),this._update("tables/"+t+"/preferences",e)},r.prototype.getMessages=function(t){return void 0===t&&(t={}),this._get("messages/rows",t)},r.prototype.getMessage=function(t){return void 0===t&&(t=n("id")),this._get("messages/rows/"+t)},r.prototype.sendMessage=function(t){return void 0===t&&(t=n("data")),this._post("messages/rows/",t)},r.prototype.getActivity=function(t){return void 0===t&&(t={}),this._get("activity",t)},r.prototype.getBookmarks=function(){return this._get("bookmarks")},r.prototype.getUserBookmarks=function(){return this._get("bookmarks/self")},r.prototype.getBookmark=function(t){return void 0===t&&(t=n("id")),this._get("bookmarks/"+t)},r.prototype.createBookmark=function(t){return void 0===t&&(t=n("data")),this._post("bookmarks",t)},r.prototype.deleteBookmark=function(t){return void 0===t&&(t=n("id")),this._delete("bookmarks/"+t)},r.prototype.getSettings=function(){return this._get("settings")},r.prototype.getSettingsByCollection=function(t){return void 0===t&&(t=n("name")),this._get("settings/"+t)},r.prototype.updateSettings=function(t,e){return void 0===t&&(t=n("name")),void 0===e&&(e={}),this._put("settings/"+t,e)},r.prototype.getUsers=function(t){return void 0===t&&(t={}),this._get("users",t)},r.prototype.getUser=function(t){return void 0===t&&(t=n("id")),this._get("users/"+t)},r.prototype.getMe=function(){return this._get("users/me")},r.prototype.createUser=function(t){return void 0===t&&(t=n("user")),this._post("users",t)},r.prototype.updateUser=function(t,e){return void 0===t&&(t=n("id")),void 0===e&&(e=n("data")),this._put("users/"+t,e)},r.prototype.updateMe=function(t){return void 0===t&&(t=n("data")),this._put("users/me",t)},r.prototype.updatePassword=function(t){return void 0===t&&(t=n("password")),this._put("users/me",{password:t})},r.prototype.getApi=function(t,e){return void 0===t&&(t=n("api_endpoint")),void 0===e&&(e={}),this._get(t,e,!0)},r.prototype.postApi=function(t,e,o){return void 0===t&&(t=n("api_endpoint")),void 0===e&&(e=n("data")),void 0===o&&(o={}),this._post(t,e,o,!0)},r.prototype.putApi=function(t,e){return void 0===t&&(t=n("api_endpoint")),void 0===e&&(e=n("data")),this._put(t,e,!0)},r.prototype.deleteApi=function(t,e){return void 0===t&&(t=n("api_endpoint")),void 0===e&&(e=n("data")),this._delete(t,e,!0)},r.prototype.getHash=function(t,e){return void 0===t&&(t=n("string")),void 0===e&&(e={}),this._post("hash",e)},r.prototype.getRandom=function(t){return void 0===t&&(t={}),this._post("random",{},t)},r.prototype.setAccessTokenParam=function(t){this.accessToken&&"parameter"===this.accessTokenType&&(t.access_token=this.accessToken)},Object.defineProperties(r.prototype,i);var s={RemoteInstance:r},a=s.RemoteInstance;t.default=s,t.RemoteInstance=a,Object.defineProperty(t,"__esModule",{value:!0})});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('axios'), require('qs')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'axios', 'qs'], factory) :
+  (factory((global.remote = {}),global.axios,global.qs));
+}(this, (function (exports,axios,qs) { 'use strict';
+
+  axios = axios && axios.hasOwnProperty('default') ? axios['default'] : axios;
+  qs = qs && qs.hasOwnProperty('default') ? qs['default'] : qs;
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  var RemoteInstance =
+  /*#__PURE__*/
+  function () {
+    function RemoteInstance(options) {
+      _classCallCheck(this, RemoteInstance);
+
+      var accessToken = options.accessToken,
+          url = options.url,
+          headers = options.headers,
+          accessTokenType = options.accessTokenType,
+          version = options.version,
+          maxFileSize = options.maxFileSize;
+      this.accessTokenType = accessTokenType || 'header';
+      this.accessToken = accessToken;
+      this.headers = headers || {};
+      this.version = version || '1.1';
+      this.maxFileSize = maxFileSize;
+
+      if (!url) {
+        throw new Error('No Directus URL provided');
+      } // TEMP FIX FOR BACKWARD COMPATIBILTY
+
+
+      var _url = url.replace('/api/1.1', '');
+
+      this.base = _url.replace(/\/+$/, '');
+      this.api = this.base + '/api/';
+      this.url = this.api + this.version + '/';
+    }
+
+    _createClass(RemoteInstance, [{
+      key: "_onCaughtError",
+      value: function _onCaughtError(resolve, reject, err) {
+        if (err.response && err.response.data) {
+          return reject(err.response.data);
+        }
+
+        return reject(err);
+      }
+    }, {
+      key: "_get",
+      value: function _get$$1(endpoint) {
+        var _this = this;
+
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var isAPI = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        var headers = this._requestHeaders;
+        var url = isAPI ? this.api : this.url;
+        this.setAccessTokenParam(params);
+        return new Promise(function (resolve, reject) {
+          axios.get(url + endpoint, {
+            params: params,
+            headers: headers,
+            paramsSerializer: function paramsSerializer(params) {
+              return qs.stringify(params, {
+                arrayFormat: 'brackets',
+                encode: false
+              });
+            }
+          }).then(function (res) {
+            return resolve(res.data);
+          }).catch(function (err) {
+            return _this._onCaughtError(resolve, reject, err);
+          });
+        });
+      }
+    }, {
+      key: "_post",
+      value: function _post(endpoint) {
+        var _this2 = this;
+
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        var isAPI = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+        var headers = this._requestHeaders;
+        var url = isAPI ? this.api : this.url;
+        this.setAccessTokenParam(params);
+        return new Promise(function (resolve, reject) {
+          axios.post(url + endpoint, data, {
+            headers: headers,
+            params: params,
+            maxContentLength: _this2.maxFileSize
+          }).then(function (res) {
+            return resolve(res.data);
+          }).catch(function (err) {
+            return _this2._onCaughtError(resolve, reject, err);
+          });
+        });
+      }
+    }, {
+      key: "_put",
+      value: function _put(endpoint) {
+        var _this3 = this;
+
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        var isAPI = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+        var headers = this._requestHeaders;
+        var url = isAPI ? this.api : this.url;
+        this.setAccessTokenParam(params);
+        return new Promise(function (resolve, reject) {
+          axios.put(url + endpoint, data, {
+            headers: headers,
+            params: params,
+            maxContentLength: _this3.maxFileSize
+          }).then(function (res) {
+            return resolve(res.data);
+          }).catch(function (err) {
+            return _this3._onCaughtError(resolve, reject, err);
+          });
+        });
+      }
+    }, {
+      key: "_delete",
+      value: function _delete(endpoint) {
+        var _this4 = this;
+
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        var isAPI = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+        var headers = this._requestHeaders;
+        var url = isAPI ? this.api : this.url;
+        this.setAccessTokenParam(params);
+        return new Promise(function (resolve, reject) {
+          axios.delete(url + endpoint, {
+            headers: headers,
+            data: data,
+            params: params
+          }).then(function (res) {
+            return resolve(res.data);
+          }).catch(function (err) {
+            return _this4._onCaughtError(resolve, reject, err);
+          });
+        });
+      } // Authentication
+      // -------------------------------------------
+
+    }, {
+      key: "authenticate",
+      value: function authenticate() {
+        var _this5 = this;
+
+        var email = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('email');
+        var password = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('password');
+        return new Promise(function (resolve, reject) {
+          _this5._post('auth/request-token', {
+            email: email,
+            password: password
+          }).then(function (res) {
+            if (res.success) {
+              _this5.accessToken = res.data.token;
+              return resolve(res);
+            }
+
+            return reject(res);
+          }).catch(function (err) {
+            return reject(err);
+          });
+        });
+      }
+    }, {
+      key: "deauthenticate",
+      value: function deauthenticate() {
+        this.accessToken = null;
+      } // Items
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "createItem",
+      value: function createItem() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        return this._post("tables/".concat(table, "/rows"), data, params);
+      }
+    }, {
+      key: "getItems",
+      value: function getItems() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return this._get("tables/".concat(table, "/rows"), params);
+      }
+    }, {
+      key: "getItem",
+      value: function getItem() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('id');
+        var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        return this._get("tables/".concat(table, "/rows/").concat(id), params);
+      }
+    }, {
+      key: "updateItem",
+      value: function updateItem() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('id');
+        var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : requiredParam('data');
+        var params = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+        return this._put("tables/".concat(table, "/rows/").concat(id), data, params);
+      }
+    }, {
+      key: "deleteItem",
+      value: function deleteItem() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('id');
+        var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        return this._delete("tables/".concat(table, "/rows/").concat(id), {}, params);
+      }
+    }, {
+      key: "createBulk",
+      value: function createBulk() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('data');
+
+        if (Array.isArray(data) === false) {
+          throw new TypeError("Parameter data should be an array of objects");
+        }
+
+        return this._post("tables/".concat(table, "/rows/bulk"), {
+          rows: data
+        });
+      }
+    }, {
+      key: "updateBulk",
+      value: function updateBulk() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('data');
+
+        if (Array.isArray(data) === false) {
+          throw new TypeError("Parameter data should be an array of objects");
+        }
+
+        return this._put("tables/".concat(table, "/rows/bulk"), {
+          rows: data
+        });
+      }
+    }, {
+      key: "deleteBulk",
+      value: function deleteBulk() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('data');
+
+        if (Array.isArray(data) === false) {
+          throw new TypeError("Parameter data should be an array of objects");
+        }
+
+        return this._delete("tables/".concat(table, "/rows/bulk"), {
+          rows: data
+        });
+      } // Files
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "createFile",
+      value: function createFile() {
+        var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        return this._post('files', data);
+      }
+    }, {
+      key: "getFiles",
+      value: function getFiles() {
+        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        return this._get('files', params);
+      }
+    }, {
+      key: "getFile",
+      value: function getFile() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        return this._get("files/".concat(id));
+      }
+    }, {
+      key: "updateFile",
+      value: function updateFile() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('data');
+        return this._put("files/".concat(id), data);
+      }
+    }, {
+      key: "deleteFile",
+      value: function deleteFile() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        return this._delete("files/".concat(id));
+      } // Tables
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "createTable",
+      value: function createTable() {
+        var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('name');
+        return this._post('tables', {
+          name: name
+        });
+      }
+    }, {
+      key: "getTables",
+      value: function getTables() {
+        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        return this._get('tables', params);
+      }
+    }, {
+      key: "getTable",
+      value: function getTable() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return this._get("tables/".concat(table), params);
+      } // Columns
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "createColumn",
+      value: function createColumn() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return this._post("tables/".concat(table, "/columns"), data);
+      }
+    }, {
+      key: "getColumns",
+      value: function getColumns() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return this._get("tables/".concat(table, "/columns"), params);
+      }
+    }, {
+      key: "getColumn",
+      value: function getColumn() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var column = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('column');
+        return this._get("tables/".concat(table, "/columns/").concat(column));
+      }
+    }, {
+      key: "updateColumn",
+      value: function updateColumn() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var column = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('column');
+        var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        return this._put("tables/".concat(table, "/columns/").concat(column), data);
+      }
+    }, {
+      key: "deleteColumn",
+      value: function deleteColumn() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var column = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('column');
+        return this._delete("tables/".concat(table, "/columns/").concat(column));
+      } // Groups
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "createGroup",
+      value: function createGroup() {
+        var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('name');
+        return this._post('groups', {
+          name: name
+        });
+      }
+    }, {
+      key: "getGroups",
+      value: function getGroups() {
+        return this._get('groups');
+      }
+    }, {
+      key: "getGroup",
+      value: function getGroup() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        return this._get("groups/".concat(id));
+      } // Privileges
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "createPrivileges",
+      value: function createPrivileges() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return this._post("privileges/".concat(id), data);
+      }
+    }, {
+      key: "getPrivileges",
+      value: function getPrivileges() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        return this._get("privileges/".concat(id));
+      }
+    }, {
+      key: "getTablePrivileges",
+      value: function getTablePrivileges() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        var table = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('table');
+        return this._get("privileges/".concat(id, "/").concat(table));
+      }
+    }, {
+      key: "updatePrivileges",
+      value: function updatePrivileges() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        var table = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('table');
+        return this._get("privileges/".concat(id, "/").concat(table));
+      } // Preferences
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "getPreferences",
+      value: function getPreferences() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        return this._get("tables/".concat(table, "/preferences"));
+      }
+    }, {
+      key: "updatePreference",
+      value: function updatePreference() {
+        var table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('table');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return this._update("tables/".concat(table, "/preferences"), data);
+      } // Messages
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "getMessages",
+      value: function getMessages() {
+        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        return this._get('messages/rows', params);
+      }
+    }, {
+      key: "getMessage",
+      value: function getMessage() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        return this._get("messages/rows/".concat(id));
+      }
+    }, {
+      key: "sendMessage",
+      value: function sendMessage() {
+        var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('data');
+        return this._post('messages/rows/', data);
+      } // Activity
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "getActivity",
+      value: function getActivity() {
+        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        return this._get('activity', params);
+      } // Bookmarks
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "getBookmarks",
+      value: function getBookmarks() {
+        return this._get('bookmarks');
+      }
+    }, {
+      key: "getUserBookmarks",
+      value: function getUserBookmarks() {
+        return this._get('bookmarks/self');
+      }
+    }, {
+      key: "getBookmark",
+      value: function getBookmark() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        return this._get("bookmarks/".concat(id));
+      }
+    }, {
+      key: "createBookmark",
+      value: function createBookmark() {
+        var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('data');
+        return this._post('bookmarks', data);
+      }
+    }, {
+      key: "deleteBookmark",
+      value: function deleteBookmark() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        return this._delete("bookmarks/".concat(id));
+      } // Settings
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "getSettings",
+      value: function getSettings() {
+        return this._get('settings');
+      }
+    }, {
+      key: "getSettingsByCollection",
+      value: function getSettingsByCollection() {
+        var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('name');
+        return this._get("settings/".concat(name));
+      }
+    }, {
+      key: "updateSettings",
+      value: function updateSettings() {
+        var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('name');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return this._put("settings/".concat(name), data);
+      } // Users
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "getUsers",
+      value: function getUsers() {
+        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        return this._get('users', params);
+      }
+    }, {
+      key: "getUser",
+      value: function getUser() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        return this._get("users/".concat(id));
+      }
+    }, {
+      key: "getMe",
+      value: function getMe() {
+        return this._get("users/me");
+      }
+    }, {
+      key: "createUser",
+      value: function createUser() {
+        var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('user');
+        return this._post('users', user);
+      }
+    }, {
+      key: "updateUser",
+      value: function updateUser() {
+        var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('id');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('data');
+        return this._put("users/".concat(id), data);
+      }
+    }, {
+      key: "updateMe",
+      value: function updateMe() {
+        var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('data');
+        return this._put('users/me', data);
+      } // WARNING: Updating user password doesn't check strength or length
+
+    }, {
+      key: "updatePassword",
+      value: function updatePassword() {
+        var password = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('password');
+        return this._put('users/me', {
+          password: password
+        });
+      } // API Endpoints
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "getApi",
+      value: function getApi() {
+        var api_endpoint = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('api_endpoint');
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return this._get(api_endpoint, params, true);
+      }
+    }, {
+      key: "postApi",
+      value: function postApi() {
+        var api_endpoint = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('api_endpoint');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('data');
+        var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        return this._post(api_endpoint, data, params, true);
+      }
+    }, {
+      key: "putApi",
+      value: function putApi() {
+        var api_endpoint = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('api_endpoint');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('data');
+        return this._put(api_endpoint, data, true);
+      }
+    }, {
+      key: "deleteApi",
+      value: function deleteApi() {
+        var api_endpoint = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('api_endpoint');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : requiredParam('data');
+        return this._delete(api_endpoint, data, true);
+      } // Hash
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "getHash",
+      value: function getHash() {
+        var string = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : requiredParam('string');
+        var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return this._post('hash', data);
+      } // Random
+      // ----------------------------------------------------------------------------------
+
+    }, {
+      key: "getRandom",
+      value: function getRandom() {
+        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        return this._post('random', {}, params);
+      }
+    }, {
+      key: "setAccessTokenParam",
+      value: function setAccessTokenParam(params) {
+        if (this.accessToken && this.accessTokenType === 'parameter') {
+          params.access_token = this.accessToken;
+        }
+      }
+    }, {
+      key: "_requestHeaders",
+      get: function get() {
+        var headers = Object.assign({}, this.headers);
+
+        if (this.accessToken && this.accessTokenType === 'header') {
+          headers.Authorization = 'Bearer ' + this.accessToken;
+        }
+
+        return headers;
+      }
+    }]);
+
+    return RemoteInstance;
+  }();
+
+  function requiredParam(name) {
+    throw new Error("Missing parameter [".concat(name, "]"));
+  }
+
+  var remote = RemoteInstance;
+
+  var directusSdkJavascript = {
+    RemoteInstance: remote
+  };
+  var directusSdkJavascript_1 = directusSdkJavascript.RemoteInstance;
+
+  exports.default = directusSdkJavascript;
+  exports.RemoteInstance = directusSdkJavascript_1;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+})));
